@@ -2,7 +2,7 @@
   <mat-card>
     <mat-card-title>
       <div fxLayout="row" fxLayoutAlign="start center">
-        <button mat-icon-button routerLink="/sessions">
+        <button data-cy="form-back-button" mat-icon-button routerLink="/sessions">
           <mat-icon>arrow_back</mat-icon>
         </button>
         <h1 *ngIf="!onUpdate">Create session</h1>
@@ -21,7 +21,7 @@
         </mat-form-field>
         <mat-form-field appearance="outline">
           <mat-label>Teacher</mat-label>
-          <mat-select ngDefaultControl formControlName="teacher_id">
+          <mat-select ngDefaultControl formControlName="teacher_id" data-cy="teacher-select">
             <mat-option *ngFor="let teacher of teachers$ | async" [value]="teacher.id">
               {{teacher.firstName}} {{teacher.lastName}}
             </mat-option>
@@ -29,10 +29,10 @@
         </mat-form-field>
         <mat-form-field appearance="outline" fxFlex>
           <mat-label>Description</mat-label>
-          <textarea matInput rows="8" formControlName="description"></textarea>
+          <textarea matInput rows="8" formControlName="description" data-cy="description-textarea"></textarea>
         </mat-form-field>
         <div fxLayout="row" fxLayoutAlign="center center">
-          <button mat-raised-button color="primary" type="submit" [disabled]="sessionForm.invalid">
+          <button data-cy="submit-button-form" mat-raised-button color="primary" type="submit" [disabled]="sessionForm.invalid">
             Save
           </button>
         </div>

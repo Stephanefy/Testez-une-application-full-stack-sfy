@@ -11,6 +11,7 @@ import { SessionService } from './services/session.service';
   styleUrls: ['./app.component.scss']
 })
 export class AppComponent {
+
   constructor(
     private authService: AuthService,
     private router: Router,

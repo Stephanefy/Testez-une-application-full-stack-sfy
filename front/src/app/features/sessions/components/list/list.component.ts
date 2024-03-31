@@ -11,7 +11,7 @@ import { SessionApiService } from '../../services/session-api.service';
   styleUrls: ['./list.component.scss']
 })
 export class ListComponent {
-
+  
   public sessions$: Observable<Session[]> = this.sessionApiService.all();
 
   constructor(

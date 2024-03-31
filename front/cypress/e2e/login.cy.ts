@@ -1,16 +1,19 @@
+import '../support/commands';
+
 describe('Login spec', () => {
+
+
+  
   it('Login successfull', () => {
+    cy.login()
+    
+    cy.url().should('include', '/sessions')
+  })
+
+  it('should display en error occured if email format is not valid', () => {
+
     cy.visit('/login')
 
-    cy.intercept('POST', '/api/auth/login', {
-      body: {
-        id: 1,
-        username: 'userName',
-        firstName: 'firstName',
-        lastName: 'lastName',
-        admin: true
-      },
-    })
 
     cy.intercept(
       {
@@ -19,9 +22,12 @@ describe('Login spec', () => {
       },
       []).as('session')
 
-    cy.get('input[formControlName=email]').type("yoga@studio.com")
-    cy.get('input[formControlName=password]').type(`${"test!1234"}{enter}{enter}`)
+    cy.get('input[formControlName=email]').type("yoga@studiocom")
+    cy.get('input[formControlName=password]').type(`${"test!1234"}`)
 
-    cy.url().should('include', '/sessions')
+    cy.get('[type="submit"]').click();
+
+
+    cy.get('[data-cy="login-error"]').should('be.visible')
   })
 });

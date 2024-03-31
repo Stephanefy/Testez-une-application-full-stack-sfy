@@ -1,9 +1,10 @@
 import { Component, OnInit } from '@angular/core';
-import { MatSnackBar } from '@angular/material/snack-bar';
+import { MatSnackBar, MatSnackBarConfig } from '@angular/material/snack-bar';
 import { Router } from '@angular/router';
 import { User } from '../../interfaces/user.interface';
 import { SessionService } from '../../services/session.service';
 import { UserService } from '../../services/user.service';
+
 
 @Component({
   selector: 'app-me',
@@ -39,5 +40,4 @@ export class MeComponent implements OnInit {
         this.router.navigate(['/']);
       })
   }
-
 }

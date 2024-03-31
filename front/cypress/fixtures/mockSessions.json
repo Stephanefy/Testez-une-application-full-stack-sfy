@@ -1,0 +1,26 @@
+[
+    {
+      "id": 1,
+      "name": "Session 1",
+      "description": "Description 1",
+      "date": "21/03/2025",
+      "teacher_id": 1,
+      "users": []
+    },
+    {
+      "id": 2,
+      "name": "Session 2",
+      "description": "Description 2",
+      "date": "05/03/2025",
+      "teacher_id": 1,
+      "users": []
+    },
+    {
+      "id": 3,
+      "name": "Session 3",
+      "description": "Description 3",
+      "date": "19/09/2025",
+      "teacher_id": 1,
+      "users": []
+    }
+  ]
