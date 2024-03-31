@@ -112,6 +112,11 @@
 				<groupId>org.jacoco</groupId>
 				<artifactId>jacoco-maven-plugin</artifactId>
 				<version>0.8.5</version>
+				<configuration>
+					<excludes>
+						<exclude>com/openclassrooms/starterjwt/dto/*</exclude>
+					</excludes>
+				</configuration>
 				<executions>
 					<execution>
 						<goals>
@@ -180,6 +185,7 @@
 							<goal>merge</goal>
 						</goals>
 						<configuration>
+
 							<fileSets>
 								<fileSet implementation="org.apache.maven.shared.model.fileset.FileSet">
 									<directory>${project.basedir}</directory>
