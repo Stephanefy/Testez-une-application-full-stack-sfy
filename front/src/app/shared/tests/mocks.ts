@@ -1,6 +1,8 @@
+import { Observable, of } from "rxjs";
 import { Session } from "src/app/features/sessions/interfaces/session.interface";
 import { SessionInformation } from "src/app/interfaces/sessionInformation.interface";
 import { User } from "src/app/interfaces/user.interface";
+import { SessionService } from "src/app/services/session.service";
 
 
 /** use in session-api service **/
@@ -59,3 +61,20 @@ export const mockUser: User = {
     updatedAt: new Date(),
   };
 /** */
+
+
+export const mockSessionService: Partial<SessionService> = {
+  isLogged: true,
+  sessionInformation: undefined,
+  logIn(sessionInformation: SessionInformation): void {
+    this.sessionInformation = sessionInformation;
+    this.isLogged = true;
+  },
+  logOut(): void {
+    this.sessionInformation = undefined;
+    this.isLogged = false;
+  },
+  $isLogged(): Observable<boolean> {
+    return of(true);
+  },
+};

@@ -13,6 +13,16 @@ export function findEl<T>(
     );
   }
 
+export function expectText<T>(
+    fixture: ComponentFixture<T>,
+    testId: string,
+    text: string,
+  ): void {
+    const element = findEl(fixture, testId);
+    const actualText = element.nativeElement.textContent;
+    expect(actualText).toBe(text);
+  }
+
 /**
  * Makes a fake click event that provides the most important properties.
  * Sets the button to left.

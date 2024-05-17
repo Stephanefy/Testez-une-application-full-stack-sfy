@@ -14,6 +14,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+/** Integration tests for {@link UserController} */
 
 @SpringBootTest
 @AutoConfigureMockMvc
@@ -40,7 +41,7 @@ public class UserControllerIT {
     @WithMockUser(username="user@example.com", roles={"USER"})
     public void deleteUser_WithMatchingAuthenticatedUser_ReturnsOk() throws Exception {
 
-        String userIdToDelete = "2"; // This should match the setup user's ID
+        int userIdToDelete = 2; // This should match the setup user's ID
 
 
 

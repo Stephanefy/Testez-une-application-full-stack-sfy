@@ -53,10 +53,10 @@ public class SessionTest {
                 .setCreatedAt(LocalDateTime.now())
                 .setUpdatedAt(LocalDateTime.now());
 
-        Teacher teacher = new Teacher(); // Assume Teacher is another entity similar to Session
+        Teacher teacher = new Teacher();
         session.setTeacher(teacher);
 
-        User user1 = new User(); // Assume User is another entity
+        User user1 = new User();
         User user2 = new User();
         session.setUsers(Arrays.asList(user1, user2));
     }

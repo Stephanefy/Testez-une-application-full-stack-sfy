@@ -7,7 +7,6 @@ import com.openclassrooms.starterjwt.models.Teacher;
 import com.openclassrooms.starterjwt.models.User;
 import com.openclassrooms.starterjwt.repository.SessionRepository;
 import com.openclassrooms.starterjwt.repository.UserRepository;
-import com.openclassrooms.starterjwt.services.SessionService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -16,9 +15,9 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.verify;
@@ -40,6 +39,8 @@ public class SessionServiceTest {
 
     private User user;
 
+    private Session session;
+
     private List<User> particpatingUsers = new ArrayList<>();
 
     private Long sessionId = 1L;
@@ -47,16 +48,16 @@ public class SessionServiceTest {
 
     @BeforeEach
     public void setup(){
-         user = User.builder().id(1L).email("john@test.com").firstName("John").lastName("Doe").admin(false).password("password").build(); // Mock user setup
+         user = User.builder().id(1L).email("john@test.com").firstName("John").lastName("Doe").admin(false).password("password").build();
          teacher = Teacher.builder().id(1L).firstName("Alice").firstName("Murphy").build();
-
+         session = Session.builder().id(1L).description("Learn Warrior stance").users(particpatingUsers).teacher(teacher).build();
     }
 
 
     @Test
     public void whenFindAll_thenReturnsListOfSessions() {
         List<Session> sessions = new ArrayList<>();
-        sessions.add(new Session()); // Add mock sessions as needed
+        sessions.add(new Session());
         when(sessionRepository.findAll()).thenReturn(sessions);
 
         List<Session> foundSessions = sessionService.findAll();
@@ -68,26 +69,31 @@ public class SessionServiceTest {
     }
 
     @Test
-    public void whenParticipateWithValidIds_thenSuccess() {
+    public void whenParticipateToASession_ThenReturnSuccess() {
 
-        Session session = Session.builder().id(1L).description("Learn Warrior stance").users(particpatingUsers).teacher(teacher).build(); // Mock session setup
-        when(sessionRepository.findById(sessionId)).thenReturn(Optional.of(session));
+
+
+        when(sessionRepository.findById(session.getId())).thenReturn(Optional.of(session));
         when(userRepository.findById(user.getId())).thenReturn(Optional.of(user));
 
-        // Assuming session.getUsers() is properly initialized in the mock Session object
-        sessionService.participate(sessionId, user.getId());
+        sessionService.participate(session.getId(), user.getId());
+
 
         assertTrue(session.getUsers().contains(user));
         verify(sessionRepository).save(session);
+
     }
+
+
 
     @Test
     public void whenUserAlreadyParticipateToASession_ThenThrowBadRequest() {
-        particpatingUsers.add(user);
-        Session session = Session.builder().id(1L).description("Learn Warrior stance").users(particpatingUsers).teacher(teacher).build(); // Mock session setup
+
+        session.setUsers(Arrays.asList(user));
 
         when(sessionRepository.findById(sessionId)).thenReturn(Optional.of(session));
         when(userRepository.findById(user.getId())).thenReturn(Optional.of(user));
+
 
 
         assertThrows(BadRequestException.class, () -> {
@@ -96,25 +102,43 @@ public class SessionServiceTest {
 
     }
 
-    @Test
-    public void whenUserNoLongerParticipate_thenReturnSuccessWithSessionWithoutUserId(){
-        particpatingUsers.add(user);
-        Session session = Session.builder().id(1L).description("Learn Warrior stance").users(particpatingUsers).teacher(teacher).build();
-
-        session.setUsers(session.getUsers().stream().filter(user -> !user.getId().equals(user.getId())).collect(Collectors.toList()));
-
-        assertFalse(session.getUsers().contains(user));
-
-    }
 
     @Test
-    public void whenParticipateAndSessionNotFound_thenThrowNotFoundException() {
-
+    public void whenNoLongerParticipateAndSessionNotFound_thenThrowNotFoundException() {
+        Long sessionId = 2L;
         when(sessionRepository.findById(sessionId)).thenReturn(Optional.empty());
 
         assertThrows(NotFoundException.class, () -> {
             sessionService.participate(sessionId, user.getId());
         });
+    }
+
+    @Test
+    public void whenUserIsNotParticipatingAndNoLongerParticipate_ThenReturnBadRequest() {
+        User newUser = User.builder().id(2L).email("alice@test.com").firstName("Alice").lastName("Grant").admin(false).password("password").build();
+
+
+        when(sessionRepository.findById(session.getId())).thenReturn(Optional.of(session));
+
+
+        assertThrows(BadRequestException.class, () -> sessionService.noLongerParticipate(sessionId, newUser.getId()),
+                "Should throw BadRequestException when user is not participating.");
+    }
+
+    @Test
+    public void whenNoLongerParticipate_ThenReturnSuccessfulRemoval() {
+
+        session.setUsers(Arrays.asList(user));
+
+        when(sessionRepository.findById(session.getId())).thenReturn(Optional.of(session));
+
+        sessionService.noLongerParticipate(session.getId(), user.getId());
+
+        assertEquals(0, session.getUsers().size(), "User list should have one user after removal.");
+        assertFalse(session.getUsers().contains(user), "User list should not contain the removed user.");
+
+        verify(sessionRepository).save(session);
+
     }
 
 

@@ -24,4 +24,9 @@ module.exports = {
   moduleDirectories: [
     "node_modules"
   ],
+  testPathIgnorePatterns: ["<rootDir>/src/app/shared/"],
+  coveragePathIgnorePatterns: [
+    "<rootDir>/src/app/shared/"
+  ],
+
 };

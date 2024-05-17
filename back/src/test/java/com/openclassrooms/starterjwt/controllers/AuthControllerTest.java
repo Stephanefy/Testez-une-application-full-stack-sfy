@@ -15,7 +15,6 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
@@ -53,6 +52,9 @@ public class AuthControllerTest {
     private AuthenticationManager authenticationManager;
 
     @Mock
+    private Authentication authentication;
+
+    @Mock
     private UserRepository userRepository;
 
     @Mock
@@ -81,7 +83,7 @@ public class AuthControllerTest {
 
 
         // Mock authentication process
-        Authentication mockAuth = org.mockito.Mockito.mock(Authentication.class);
+        authentication = org.mockito.Mockito.mock(Authentication.class);
 
         mockLoginRequest = LoginRequest.builder().email("user@example.com").password("password").build();
         mockSignUpRequest = SignupRequest.builder().firstName("John").lastName("Doe").email("user@example.com").password("password").build();
@@ -90,12 +92,10 @@ public class AuthControllerTest {
 
 
     @Test
-    public void whenAuthenticateUser_thenReturnJwtResponse() throws Exception {
+    public void whenLoginRequestAuthenticateUser_thenReturnJwtResponse() throws Exception {
 
         // Mock the authentication process
         mockLoginRequest = LoginRequest.builder().email("user@example.com").password("password").build();
-//        mockSignUpRequest = SignupRequest.builder().firstName("John").lastName("Doe").email("user@example.com").password("password").build();
-        Authentication authentication = Mockito.mock(Authentication.class);
         UserDetailsImpl mockUserDetails = new UserDetailsImpl(
                 1L,
                 "user@example.com",
@@ -104,8 +104,7 @@ public class AuthControllerTest {
                 false,
                Arrays.asList(new SimpleGrantedAuthority("ROLE_USER")).toString()
         );
-//        UserDetailsImpl userDetails = new UserDetailsImpl(1L, "user@example.com", "John", "Doe", Arrays.asList(new SimpleGrantedAuthority("ROLE_USER")).toString());
-        User user = new User(); // Assuming there's a constructor or setters to set user details
+        User user = new User();
         user.setAdmin(true);
         String mockJwt = "mockJwtToken";
 
@@ -134,7 +133,7 @@ public class AuthControllerTest {
 
 
     @Test
-    public void whenRegisterUser_thenReturnSuccessMessage() throws Exception {
+    public void whenRegisterAUser_thenReturnSuccessMessage() throws Exception {
 
         // Simulate the behavior of userRepository and passwordEncoder
         when(userRepository.existsByEmail(anyString())).thenReturn(false);

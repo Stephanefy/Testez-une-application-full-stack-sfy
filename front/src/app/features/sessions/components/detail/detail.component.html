@@ -6,7 +6,7 @@
           <button mat-icon-button (click)="back()">
             <mat-icon>arrow_back</mat-icon>
           </button>
-          <h1 data-cy="details-session-name">{{ session.name | titlecase }}</h1>
+          <h1 data-cy="details-session-name" data-testid="session-name">{{ session.name | titlecase }}</h1>
         </div>
         <div>
           <button
@@ -58,7 +58,7 @@
       <div class="my2" fxLayout="row" fxLayoutAlign="space-between center">
         <div fxLayoutAlign="start center">
           <mat-icon> group </mat-icon>
-          <span class="ml1">{{ session.users.length }} attendees</span>
+          <span class="ml1" data-testid="session-attendees">{{ session.users.length }} attendees</span>
         </div>
         <div fxLayoutAlign="start center">
           <mat-icon> calendar_month </mat-icon>
@@ -67,7 +67,7 @@
       </div>
       <div class="description">
         <p>Description:</p>
-        <span data-cy="details-session-description">{{
+        <span data-cy="details-session-description" data-testid="session-description">{{
           session.description
         }}</span>
         <br />

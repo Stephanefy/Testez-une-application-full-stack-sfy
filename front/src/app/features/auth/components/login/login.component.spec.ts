@@ -1,5 +1,5 @@
 import { HttpClientModule } from '@angular/common/http';
-import { ComponentFixture, fakeAsync, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormBuilder, ReactiveFormsModule } from '@angular/forms';
 import { MatCardModule } from '@angular/material/card';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -20,6 +20,8 @@ import { routes } from '../../../../app-routing.module';
 import { FixNavigationTriggeredOutsideAngularZoneNgModule } from './fixing-navigation-trigger-outside-ngzone.module';
 import { LoginRequest } from '../../interfaces/loginRequest.interface';
 import { By } from '@angular/platform-browser';
+import { expectText } from 'src/app/shared/tests/utils';
+import { mockSessionService } from 'src/app/shared/tests/mocks';
 
 /**
  * NgModule as workaround for "Navigation triggered outside Angular zone" in tests
@@ -49,21 +51,6 @@ describe('LoginComponent', () => {
     },
   };
 
-  let mockSessionService: Partial<SessionService> = {
-    isLogged: true,
-    sessionInformation: undefined,
-    logIn(sessionInformation: SessionInformation): void {
-      this.sessionInformation = sessionInformation;
-      this.isLogged = true;
-    },
-    logOut(): void {
-      this.sessionInformation = undefined;
-      this.isLogged = false;
-    },
-    $isLogged(): Observable<boolean> {
-      return of(true);
-    },
-  };
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
@@ -94,9 +81,6 @@ describe('LoginComponent', () => {
     fixture.detectChanges();
   });
 
-  it('should create', () => {
-    expect(component).toBeTruthy();
-  });
 
   it('should require email and password', () => {
     const emailControl = component.form.get('email');
@@ -107,6 +91,12 @@ describe('LoginComponent', () => {
 
     expect(emailControl?.valid).toBeFalsy();
     expect(passwordControl?.valid).toBeFalsy();
+  });
+
+  it('should show an error message if login fails', () => {
+    component.onError = true; 
+    fixture.detectChanges();
+    expectText(fixture, 'login-error-message', 'An error occurred');
   });
 
   it('should call AuthService.login on submit and navigate on success', async () => {
@@ -131,6 +121,9 @@ describe('LoginComponent', () => {
     email?.setValue('test@example.com');
     password?.setValue('password');
     fixture.detectChanges();
+
+
+    expect(component.form.valid).toBeTruthy();
 
     submitButton.click();
 

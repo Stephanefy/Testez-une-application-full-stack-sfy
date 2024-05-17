@@ -14,6 +14,13 @@ declare global {
           createSession(): Chainable<any>;
           fetchDetailsData(): Chainable<any>;
         }
+
+        interface Window {
+          sessionService: {
+            sessionInformation: { id: number },
+            logOut: Cypress.Agent<sinon.SinonSpy>
+          }
+        }
     }
 
 }

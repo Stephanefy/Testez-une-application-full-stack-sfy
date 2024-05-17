@@ -1,7 +1,6 @@
 package com.openclassrooms.starterjwt.repository;
 
 import com.openclassrooms.starterjwt.models.User;
-import com.openclassrooms.starterjwt.repository.UserRepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
@@ -22,7 +21,6 @@ public class UserRepositoryIT {
 
     @Test
     public void whenFindByEmail_thenReturnUser() {
-        // Given
         User newUser = new User();
         newUser.setEmail("test@example.com");
         newUser.setPassword("password"); // Assuming User entity has these fields
@@ -30,10 +28,8 @@ public class UserRepositoryIT {
         newUser.setLastName("User");
         entityManager.persistAndFlush(newUser);
 
-        // When
         Optional<User> foundUser = userRepository.findByEmail("test@example.com");
 
-        // Then
         assertThat(foundUser).isPresent();
         assertThat(foundUser.get().getEmail()).isEqualTo("test@example.com");
     }
@@ -42,25 +38,20 @@ public class UserRepositoryIT {
     public void whenFindByEmail_thenReturnEmpty() {
         // Given no user is saved
 
-        // When
         Optional<User> foundUser = userRepository.findByEmail("nonexistent@example.com");
 
-        // Then
         assertThat(foundUser).isNotPresent();
     }
 
     @Test
     public void whenExistsByEmail_thenReturnTrue() {
-        // Given
         User newUser = new User();
         newUser.setEmail("exists@example.com");
         newUser.setPassword("password");
         entityManager.persistAndFlush(newUser);
 
-        // When
         Boolean exists = userRepository.existsByEmail("exists@example.com");
 
-        // Then
         assertThat(exists).isTrue();
     }
 

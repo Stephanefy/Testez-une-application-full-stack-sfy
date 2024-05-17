@@ -32,7 +32,50 @@ describe('ListComponent', () => {
       teacher_id: 1,
       users: [],
     },
-    // Add more sessions as needed
+    {
+      id: 2,
+      name: 'Session 2',
+      description: 'Description 2',
+      date: new Date(),
+      teacher_id: 2,
+      users: [],
+    },
+    
+    {
+      id: 3,
+      name: 'Session 3',
+      description: 'Description 3',
+      date: new Date(),
+      teacher_id: 3,
+      users: [],
+    },
+    
+    {
+      id: 4,
+      name: 'Session 4',
+      description: 'Description 4',
+      date: new Date(),
+      teacher_id: 4,
+      users: [],
+    },
+    
+    {
+      id: 5,
+      name: 'Session 5',
+      description: 'Description 5',
+      date: new Date(),
+      teacher_id: 5,
+      users: [],
+    },
+    
+    {
+      id: 6,
+      name: 'Session 6',
+      description: 'Description 6',
+      date: new Date(),
+      teacher_id: 6,
+      users: [],
+    },
   ];
   
 
@@ -104,12 +147,14 @@ describe('ListComponent', () => {
     fixture.whenStable().then(() => {
       fixture.detectChanges(); // Update view with async data
       const sessionItems = fixture.nativeElement.querySelectorAll('.item');
-      expect(sessionItems.length).toBe(1);
+      expect(sessionItems.length).toBe(6);
       done();
     });    
   });
 
   it('should conditionally display the Create and Edit buttons for admin users', () => {
+
+    //
 
     const createButton = findEl(fixture, "create-button");
     const editButtons = findEl(fixture, "update-button");

@@ -43,7 +43,6 @@ public class SessionRepositoryIT {
 
     @Test
     public void whenDelete_thenRemoveSession() {
-        // Given
         Teacher teacher = entityManager.persistFlushFind(Teacher.builder().firstName("Mike").lastName("Tyson").build());
         Session session = Session.builder()
                 .name("Punching Technique")
@@ -53,17 +52,15 @@ public class SessionRepositoryIT {
                 .build();
         Session persistedSession = entityManager.persistAndFlush(session);
 
-        // When
+
         sessionRepository.delete(persistedSession);
         Session deletedSession = entityManager.find(Session.class, persistedSession.getId());
 
-        // Then
         assertThat(deletedSession).isNull();
     }
 
     @Test
     public void whenFindAll_thenReturnAllSessions() {
-        // Given
         Teacher teacher1 = entityManager.persistFlushFind(Teacher.builder().firstName("Bruce").lastName("Lee").build());
         Teacher teacher2 = entityManager.persistFlushFind(Teacher.builder().firstName("Chuck").lastName("Norris").build());
 
@@ -84,10 +81,8 @@ public class SessionRepositoryIT {
         entityManager.persistAndFlush(session1);
         entityManager.persistAndFlush(session2);
 
-        // When
         List<Session> sessions = sessionRepository.findAll();
 
-        // Assert that the returned list contains 4 elements (initial data + added in this test)
         assertThat(sessions).asList().hasSize(4).contains(session1, session2);
     }
 

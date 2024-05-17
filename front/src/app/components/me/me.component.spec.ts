@@ -15,6 +15,7 @@ import { Router } from '@angular/router';
 import { Location } from "@angular/common";
 import { routes } from 'src/app/app-routing.module';
 import { RouterTestingModule } from '@angular/router/testing';
+import { expectText } from 'src/app/shared/tests/utils';
 
 
 describe('MeComponent', () => {
@@ -74,10 +75,6 @@ describe('MeComponent', () => {
 
   });
 
-  it('should create', () => {
-    expect(component).toBeTruthy();
-  });
-
 
   it('should fetch user on ngOnInit by getting the id from session information', () => {
       
@@ -89,7 +86,7 @@ describe('MeComponent', () => {
   it('should delete user and show confirmation snack bar and redirect to home page', async () => {
 
 
-    // Trigger the delete method
+    // Trigger the delete methods
     await component.delete();
   
     // Verify userService.delete was called
@@ -101,5 +98,12 @@ describe('MeComponent', () => {
 
     expect(location.path()).toBe("");
   });
+
+
+  it('should display current user information', () => {
+    
+    expectText(fixture, "full-username", "Name: john DOE");
+    expectText(fixture, "email", "Email: johnDoe@test.com");
+  })
   
 });

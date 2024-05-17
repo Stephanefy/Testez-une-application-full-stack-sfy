@@ -19,6 +19,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.http.MediaType;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
@@ -27,6 +28,8 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.*;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.securityContext;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -63,8 +66,6 @@ public class UserControllerTest {
 
     private ObjectMapper objectMapper;
 
-
-
     private User user;
 
     private UserDto userDto;
@@ -77,6 +78,11 @@ public class UserControllerTest {
 
         user = User.builder().firstName("John").lastName("Doe").admin(false).email("john.doe@test.com").password("test!1234").build();
         userDto = UserDto.builder().firstName("John").lastName("Doe").admin(false).email("john.doe@test.com").build();
+        mockUserDetails = mock(UserDetails.class);
+        mockAuthentication = mock(Authentication.class);
+        securityContext = mock(SecurityContext.class);
+
+
     }
 
     @Test
@@ -95,6 +101,49 @@ public class UserControllerTest {
 
         verify(userService, times(1)).findById(anyLong());
         verify(userMapper, times(1)).toDto(Mockito.any(User.class));
+    }
+
+    @Test
+    void whenIdIsNotANumberAndFindById_ThenReturnBadRequest() throws Exception {
+        mockMvc.perform(get("/api/user/abc"))
+                .andExpect(status().isBadRequest());
+    }
+
+
+    @Test
+    void whenUserFoundAndAuthorized_thenReturnOk() throws Exception {
+
+
+        when(mockUserDetails.getUsername()).thenReturn("notPrincipal@example.com");
+        when(userService.findById(123L)).thenReturn(user);
+        when(mockAuthentication.getPrincipal()).thenReturn(mockUserDetails);
+        when(securityContext.getAuthentication()).thenReturn(mockAuthentication);
+        SecurityContextHolder.setContext(securityContext);
+
+        mockMvc.perform(delete("/api/user/123").with(securityContext(securityContext)))
+                .andExpect(status().isUnauthorized());
+    }
+
+    @Test
+    void whenRequestParamsIsCorrect_ThenDeleteUserAndReturnSuccess() throws Exception {
+
+
+        when(mockUserDetails.getUsername()).thenReturn("john.doe@test.com");
+        when(userService.findById(123L)).thenReturn(user);
+        when(mockAuthentication.getPrincipal()).thenReturn(mockUserDetails);
+        when(securityContext.getAuthentication()).thenReturn(mockAuthentication);
+        SecurityContextHolder.setContext(securityContext);
+
+        mockMvc.perform(delete("/api/user/123").with(securityContext(securityContext)))
+                .andExpect(status().isOk());
+
+
+    }
+
+    @Test
+     void whenIdIsNotANumber_thenReturnBadRequest() throws Exception {
+        mockMvc.perform(delete("/api/user/abc"))
+                .andExpect(status().isBadRequest());
     }
 
 }

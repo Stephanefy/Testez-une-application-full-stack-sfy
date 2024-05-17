@@ -2,8 +2,6 @@ package com.openclassrooms.starterjwt.security.services;
 
 import com.openclassrooms.starterjwt.models.User;
 import com.openclassrooms.starterjwt.repository.UserRepository;
-import com.openclassrooms.starterjwt.security.services.UserDetailsImpl;
-import com.openclassrooms.starterjwt.security.services.UserDetailsServiceImpl;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -27,7 +25,7 @@ class UserDetailsServiceImplTest {
     private UserDetailsServiceImpl userDetailsService;
 
     @Test
-    void loadUserByUsername_WhenUserExists() {
+    void whenLoadUserByUsername_WhenUserExists_ShouldFindTheCorrectUserByEmail() {
         String email = "user@example.com";
         User user = new User();
         user.setId(1L);
@@ -50,7 +48,7 @@ class UserDetailsServiceImplTest {
     }
 
     @Test
-    void loadUserByUsername_WhenUserNotFound_ShouldThrowException() {
+    void whenLoadUserByUsername_WhenUserNotFound_ShouldThrowException() {
         String email = "nonexistent@example.com";
         when(userRepository.findByEmail(email)).thenReturn(Optional.empty());
 
